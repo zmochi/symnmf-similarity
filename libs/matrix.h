@@ -4,13 +4,9 @@
 typedef double matrix_element;
 typedef int    index;
 
-/* opaque struct for internal use, define in matrix.c */
-struct private_matrix;
-
-/* public struct so user can get dimensions of matrix */
+/* decided to go with public struct matrix implementation, so implement here */
 struct matrix {
-    struct private_matrix *internal;
-    index                  num_rows, num_cols;
+    index num_rows, num_cols;
 };
 
 /**
@@ -64,12 +60,21 @@ int multiply_matrices(const struct matrix *m1, const struct matrix *m2,
                       struct matrix *result);
 
 /**
- * @brief tranposes a matrix in-place
+ * @brief calculates m1 - m2 and stores result in last argument
  *
- * @param matrix pointer to matrix to be transposed
  * @return 0 on success, 1 on failure
  */
-int transpose_matrix(struct matrix *matrix);
+int subtract_matrices(const struct matrix *m1, const struct matrix *m2,
+                      struct matrix *result);
+
+/**
+ * @brief tranposes a matrix
+ *
+ * @param matrix pointer to matrix to be transposed
+ * @param transposed where to store transposed matrix
+ * @return 0 on success, 1 on failure
+ */
+int transpose_matrix(const struct matrix *matrix, struct matrix *transposed);
 
 /**
  * @brief copies the matrix in first argument into the matrix pointed to by the
@@ -92,6 +97,6 @@ int copy_matrix(const struct matrix *original, struct matrix *copy);
  */
 int pow_matrix(struct matrix *matrix, double pow);
 
-matrix_element frobenius_norm(struct matrix *matrix);
+matrix_element squared_frobenius_norm(struct matrix *matrix);
 
 #endif
