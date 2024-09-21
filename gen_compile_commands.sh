@@ -3,8 +3,14 @@
 # so C_FILES globbing includes files in project root
 shopt -s globstar
 
+# function executed on error
+error() {
+	echo "$1"
+	rm $COMPILE_COMMANDS_FILENAME
+}
+
 # should output with -I for each include
-PYTHON_INCLUDES="$(python3-config --includes)"
+PYTHON_INCLUDES="$(python3-config --includes)" || trap 'error "error executing command \`python3-config --includes\`"' EXIT
 PROJ_DIR="$(pwd)"
 COURSE_COMPILE_CMD="gcc -xc -ansi -Wall -Wextra -Werror -pedantic-errors"
 PYTHON_COMPILE_CMD="gcc -xc -Wall -Wextra $PYTHON_INCLUDES"
@@ -46,6 +52,6 @@ EOF
 done
 
 # remove trailing , and newline from last entry
-truncate -s -2 $COMPILE_COMMANDS_FILENAME
+truncate -s -2 $COMPILE_COMMANDS_FILENAME || trap 'error "truncate error"' EXIT
 
 echo -ne "\n]" >>$COMPILE_COMMANDS_FILENAME
