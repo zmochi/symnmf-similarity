@@ -14,6 +14,7 @@ int main(void) { /*for checks, delete later*/
         }
         printf("\n");
     }
+    free_matrix(my_mat);
     return 0;
 }
 
@@ -52,4 +53,12 @@ struct matrix *get_empty_matrix(m_index rows, m_index cols) {
     return new_mat;
 }
 
-int free_matrix(struct matrix *);
+int free_matrix(struct matrix *matrix) {
+    m_index i;
+    for ( i = 0; i < matrix->num_rows; i++ ) {
+        free(matrix->data[i]);
+    }
+    free(matrix->data);
+    free(matrix);
+    return 0;
+}
