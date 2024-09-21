@@ -22,7 +22,7 @@ struct matrix *get_new_matrix(m_index rows, m_index cols);
  */
 struct matrix *get_empty_matrix(m_index rows, m_index cols);
 
-int free_matrix(struct matrix *);
+int free_matrix(struct matrix *matrix);
 
 /**
  * @brief sets matrix[i, j] to @elem
