@@ -1,3 +1,0 @@
-CompileFlags:
-  Add: [-xc, -ansi, -Wall, -Wextra, -Werror, -pedantic-errors]
-  Compiler: gcc
