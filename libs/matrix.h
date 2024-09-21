@@ -1,8 +1,10 @@
 #ifndef __MATRIX_H
 #define __MATRIX_H
 
+#include <stdlib.h> /* size_t */
+
 typedef double matrix_element;
-typedef int    index;
+typedef size_t index;
 
 /* decided to go with public struct matrix implementation, so implement here */
 struct matrix {
@@ -38,13 +40,22 @@ matrix_element set_matrix_elem(struct matrix *matrix, index i, index j,
 matrix_element get_matrix_elem(const struct matrix *matrix, index i, index j);
 
 /**
- * @brief returns the i'th column of the matrix as an array
+ * @brief returns the i'th row/column (not sure if row or column should be a
+ * vector) of the matrix as an array
  *
- * @param matrix matrix to get column from
- * @param i index of column
- * @return the i'th column of the matrix, free'd when its matrix is free'd
+ * @param matrix matrix to get row/column from
+ * @param i index of row/column
+ * @return the i'th row/column of the matrix, free'd when its matrix is free'd
  */
 matrix_element *get_matrix_vec(const struct matrix *matrix, index i);
+
+/**
+ * @brief sets a vector in matrix (either row or column)
+ *
+ * @param vec array of matrix_element to set
+ * @return 0 on success, 1 on failure
+ */
+int set_matrix_vec(matrix_element *vec);
 
 /* !! make sure to handle overflow properly !! */
 
