@@ -3,7 +3,14 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
-#define LOG_ERR(err_msg) fprintf(stderr, "ERROR: %s" err_msg "\n", __func__)
+/* returns size of statically allocated array */
+#define ARR_SIZE(arr) ((size_t)(sizeof(arr) / sizeof(arr[0])))
+
+#define LOG1(fmt, arg) printf(fmt, arg);
+
+#define LOG_ERR(err_msg) fprintf(stderr, "ERROR: %s:" err_msg "\n", __func__)
+#define LOG_ERR1(err_msg, fmt1)                                                \
+    fprintf(stderr, "ERROR: %s:" err_msg "\n", __func__, fmt1)
 
 #define LOG_ABORT(fmt)                                                         \
     do {                                                                       \
