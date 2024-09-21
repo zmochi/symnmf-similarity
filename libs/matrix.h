@@ -56,15 +56,7 @@ matrix_element *get_matrix_vec(const struct matrix *matrix, m_index i);
  * @param vec array of matrix_element to set
  * @return 0 on success, 1 on failure
  */
-int set_matrix_vec(struct matrix *matrix, matrix_element *vec);
-
-/**
- * @brief sets a vector in matrix (either row or column)
- *
- * @param vec array of matrix_element to set
- * @return 0 on success, 1 on failure
- */
-int set_matrix_vec(struct matrix *matrix, matrix_element *vec);
+int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec);
 
 /* !! make sure to handle overflow properly !! */
 
