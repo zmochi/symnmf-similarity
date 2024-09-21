@@ -4,22 +4,22 @@
 #include <stdlib.h> /* size_t */
 
 typedef double matrix_element;
-typedef size_t index;
+typedef size_t m_index;
 
 /* decided to go with public struct matrix implementation, so implement here */
 struct matrix {
-    index num_rows, num_cols;
+    m_index num_rows, num_cols;
 };
 
 /**
  * @brief returns new matrix filled with trash data, does not fail
  */
-struct matrix *get_new_matrix(index rows, index cols);
+struct matrix *get_new_matrix(m_index rows, m_index cols);
 
 /**
  * @brief returns zeroed-out new matrix, does not fail
  */
-struct matrix *get_empty_matrix(index rows, index cols);
+struct matrix *get_empty_matrix(m_index rows, m_index cols);
 
 int free_matrix(struct matrix *);
 
@@ -29,7 +29,7 @@ int free_matrix(struct matrix *);
  *
  * @return previous element at index [i, j]
  */
-matrix_element set_matrix_elem(struct matrix *matrix, index i, index j,
+matrix_element set_matrix_elem(struct matrix *matrix, m_index i, m_index j,
                                matrix_element elem);
 /**
  * @brief gets element at index [i, j]
@@ -37,7 +37,8 @@ matrix_element set_matrix_elem(struct matrix *matrix, index i, index j,
  *
  * @return element at index [i, j]
  */
-matrix_element get_matrix_elem(const struct matrix *matrix, index i, index j);
+matrix_element get_matrix_elem(const struct matrix *matrix, m_index i,
+                               m_index j);
 
 /**
  * @brief returns the i'th row/column (not sure if row or column should be a
@@ -47,7 +48,15 @@ matrix_element get_matrix_elem(const struct matrix *matrix, index i, index j);
  * @param i index of row/column
  * @return the i'th row/column of the matrix, free'd when its matrix is free'd
  */
-matrix_element *get_matrix_vec(const struct matrix *matrix, index i);
+matrix_element *get_matrix_vec(const struct matrix *matrix, m_index i);
+
+/**
+ * @brief sets a vector in matrix (either row or column)
+ *
+ * @param vec array of matrix_element to set
+ * @return 0 on success, 1 on failure
+ */
+int set_matrix_vec(struct matrix *matrix, matrix_element *vec);
 
 /**
  * @brief sets a vector in matrix (either row or column)
