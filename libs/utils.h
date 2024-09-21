@@ -9,7 +9,7 @@
 #define CHECK_ALLOC_FAIL(ptr)                                                  \
     if ( ptr == NULL ) {                                                       \
         LOG_ERR("an error has occured");                                       \
-        return EXIT_FAILURE;                                                   \
+        exit(1);                                                   \
     }
 
 #define LOG_ABORT(fmt)                                                         \
