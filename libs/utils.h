@@ -3,7 +3,14 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
+
 #define LOG_ERR(err_msg) fprintf(stderr, "ERROR: %s" err_msg "\n", __func__)
+
+#define CHECK_ALLOC_FAIL(ptr)                                                  \
+    if ( ptr == NULL ) {                                                       \
+        LOG_ERR("an error has occured");                                       \
+        return EXIT_FAILURE;                                                   \
+    }
 
 #define LOG_ABORT(fmt)                                                         \
     do {                                                                       \
