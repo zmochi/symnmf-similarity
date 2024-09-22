@@ -42,16 +42,11 @@ int main(void) { /*for checks, delete later*/
     */
     matrix *m1, *m2, *result;
     m1 = get_empty_matrix(2, 3);
-    m2 = get_empty_matrix(3, 4);
-    result = get_empty_matrix(m1->num_rows, m2->num_cols);
+    m2 = get_empty_matrix(2, 3);
+    result = get_empty_matrix(m1->num_rows, m1->num_cols);
     for ( i = 0; i < m1->num_rows; i++ ) {
         for ( j = 0; j < m1->num_cols; j++ ) {
-            set_matrix_elem(m1, i, j, i + j);
-        }
-    }
-
-    for ( i = 0; i < m2->num_rows; i++ ) {
-        for ( j = 0; j < m2->num_cols; j++ ) {
+            set_matrix_elem(m1, i, j, i + j + i);
             set_matrix_elem(m2, i, j, i + j);
         }
     }
@@ -61,7 +56,7 @@ int main(void) { /*for checks, delete later*/
         }
         printf("\n");
     }
-    multiply_matrices(m1, m2, result);
+    subtract_matrices(m1, m2, result);
     for ( i = 0; i < result->num_rows; i++ ) {
         for ( j = 0; j < result->num_cols; j++ ) {
             printf("%f ", result->data[i][j]);
@@ -135,7 +130,7 @@ matrix_element *get_matrix_vec(const struct matrix *matrix, m_index i) {
 int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec) {
     free(matrix->data[i]);
     matrix->data[i] = vec;
-    return 1;
+    return 0;
 }
 
 int multiply_matrices(const struct matrix *m1, const struct matrix *m2,
@@ -153,5 +148,18 @@ int multiply_matrices(const struct matrix *m1, const struct matrix *m2,
         }
     }
 
-    return 1;
+    return 0;
+}
+int subtract_matrices(const struct matrix *m1, const struct matrix *m2,
+                      struct matrix *result) {
+    m_index i, j;
+    ASSERT_MATRIX_DIM(m1, m2->num_rows, m2->num_cols);
+    ASSERT_MATRIX_DIM(result, m2->num_rows, m2->num_cols);
+    for ( i = 0; i < m2->num_rows; i++ ) {
+        for ( j = 0; j < m2->num_cols; j++ ) {
+            result->data[i][j] = m1->data[i][j] - m2->data[i][j];
+        }
+    }
+
+    return 0;
 }
