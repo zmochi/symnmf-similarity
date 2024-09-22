@@ -105,7 +105,7 @@ int copy_matrix(const matrix *original, matrix *copy);
  * @param pow exponent
  * @return 0 on success, 1 on failure
  */
-int pow_matrix(matrix *matrix, double pow);
+int pow_matrix(matrix *matrix, struct matrix *result, double power);
 
 matrix_element squared_frobenius_norm(matrix *matrix);
 
