@@ -26,7 +26,7 @@ static int py_matrix_to_c(PyObject *py_matrix, struct matrix *matrix) {
     py_row_i = PyList_GetItem(py_matrix, 0);
     /* if PyList_GetItem fails, IndexError is set. so no need to set err
      * msg */
-    HANDLE_PY_FAIL(py_row_i);
+    if ( !py_row_i ) return err;
 
     m_index py_cols = PyList_Size(py_row_i);
 
@@ -40,7 +40,7 @@ static int py_matrix_to_c(PyObject *py_matrix, struct matrix *matrix) {
     for ( size_t i = 0; i < py_rows; i++ ) {
         for ( size_t j = 0; j < py_cols; j++ ) {
             py_row_i = PyList_GetItem(py_matrix, i);
-            HANDLE_PY_FAIL(py_row_i);
+            if ( !py_row_i ) return err;
 
             if ( (m_index)PyList_Size(py_row_i) != py_cols ) {
                 PyErr_SetString(PyExc_ValueError,
@@ -49,7 +49,7 @@ static int py_matrix_to_c(PyObject *py_matrix, struct matrix *matrix) {
             }
 
             py_matrix_elem = PyList_GetItem(py_row_i, j);
-            HANDLE_PY_FAIL(py_matrix_elem);
+            if ( !py_matrix_elem ) return err;
 
             if ( !PyFloat_CheckExact(py_matrix_elem) ) {
                 PyErr_SetString(PyExc_ValueError,
