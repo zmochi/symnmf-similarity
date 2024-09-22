@@ -3,12 +3,13 @@
 
 #include <stdlib.h> /* size_t */
 
-typedef double matrix_element;
-typedef size_t m_index;
-
+typedef double        matrix_element;
+typedef size_t        m_index;
+typedef struct matrix matrix;
 /* decided to go with public struct matrix implementation, so implement here */
 struct matrix {
-    m_index num_rows, num_cols;
+    m_index          num_rows, num_cols;
+    matrix_element **data;
 };
 
 /**
@@ -21,7 +22,7 @@ struct matrix *get_new_matrix(m_index rows, m_index cols);
  */
 struct matrix *get_empty_matrix(m_index rows, m_index cols);
 
-int free_matrix(struct matrix *);
+int free_matrix(struct matrix *matrix);
 
 /**
  * @brief sets matrix[i, j] to @elem

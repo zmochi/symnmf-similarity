@@ -12,6 +12,12 @@
 #define LOG_ERR1(err_msg, fmt1)                                                \
     fprintf(stderr, "ERROR: %s:" err_msg "\n", __func__, fmt1)
 
+#define CHECK_ALLOC_FAIL(ptr)                                                  \
+    if ( ptr == NULL ) {                                                       \
+        LOG_ERR("an error has occured");                                       \
+        exit(1);                                                   \
+    }
+
 #define LOG_ABORT(fmt)                                                         \
     do {                                                                       \
         LOG_ERR(fmt);                                                          \
