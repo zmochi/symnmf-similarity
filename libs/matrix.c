@@ -8,8 +8,8 @@ int main(void) { /*for checks, delete later*/
     rows = 5;
     cols = 5;
     my_mat = get_empty_matrix(rows, cols);
-
-    printf("%f\n", set_matrix_elem(my_mat, 2, 3, 54));
+    set_matrix_elem(my_mat, 2, 3, 54);
+    printf("%f\n", get_matrix_elem(my_mat, 1, 3));
     for ( i = 0; i < rows; i++ ) {
         for ( j = 0; j < cols; j++ ) {
             printf("%f ", my_mat->data[i][j]);
@@ -69,5 +69,10 @@ int free_matrix(struct matrix *matrix) {
 matrix_element set_matrix_elem(struct matrix *matrix, m_index i, m_index j,
                                matrix_element elem) {
     matrix->data[i][j] = elem;
+    return matrix->data[i][j];
+}
+
+matrix_element get_matrix_elem(const struct matrix *matrix, m_index i,
+                               m_index j) {
     return matrix->data[i][j];
 }
