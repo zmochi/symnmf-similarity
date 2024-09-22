@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "utils.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 int main(void) { /*for checks, delete later*/
@@ -81,6 +82,24 @@ int main(void) { /*for checks, delete later*/
 
     result = get_empty_matrix(m1->num_rows, m1->num_cols);
     copy_matrix(m1, result);
+    for ( i = 0; i < result->num_rows; i++ ) {
+        for ( j = 0; j < result->num_cols; j++ ) {
+            printf("%f ", result->data[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf("frobinuis: %f", squared_frobenius_norm(m1));
+
+    printf("\n");
+
+    m1 = get_empty_matrix(3, 3);
+    for ( i = 0; i < m1->num_rows; i++ ) {
+        m1->data[i][i] = 3;
+    }
+
+    result = get_empty_matrix(m1->num_rows, m1->num_cols);
+    pow_matrix(m1, result, -0.5);
     for ( i = 0; i < result->num_rows; i++ ) {
         for ( j = 0; j < result->num_cols; j++ ) {
             printf("%f ", result->data[i][j]);
@@ -207,4 +226,28 @@ int copy_matrix(const matrix *original, matrix *copy) {
         for ( j = 0; j < original->num_cols; j++ )
             copy->data[i][j] = original->data[i][j];
     return 0;
+}
+
+int pow_matrix(matrix *matrix, struct matrix *result, double power) {
+    m_index i;
+    ASSERT_SQUARE_MATRIX(matrix);
+    ASSERT_MATRIX_DIM(result, matrix->num_rows, matrix->num_cols);
+    /*check if diaginal*/
+    copy_matrix(matrix, result);
+    for ( i = 0; i < matrix->num_rows; i++ ) {
+        result->data[i][i] = pow(matrix->data[i][i], power);
+    }
+    return 0;
+}
+
+matrix_element squared_frobenius_norm(matrix *matrix) {
+    m_index        i, j;
+    matrix_element res = 0;
+    for ( i = 0; i < matrix->num_rows; i++ ) {
+        for ( j = 0; j < matrix->num_cols; j++ ) {
+            res += pow(matrix->data[i][j], 2);
+        }
+    }
+
+    return res;
 }
