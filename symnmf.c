@@ -172,14 +172,14 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
     aux_matrices[2] = get_new_matrix(k, n);
 
     if ( copy_matrix(init_H, old_H) != 0 )
-        RETURN_ERR("Couldn't copy init_H into old_H", NULL);
+        RETURN_ERR("Couldn't copy init_H into old_H", 1);
 
     while ( t < iter ) {
         if ( calc_next_H(old_H, W, aux_matrices, beta, updated_H) != 0 )
-            RETURN_ERR("Couldn't calculate next H", NULL);
+            RETURN_ERR("Couldn't calculate next H", 1);
 
         if ( subtract_matrices(updated_H, old_H, diff_H) != 0 )
-            RETURN_ERR("Couldn't subtract matrices", NULL);
+            RETURN_ERR("Couldn't subtract matrices", 1);
 
         if ( squared_frobenius_norm(diff_H) < epsilon ) break;
 
