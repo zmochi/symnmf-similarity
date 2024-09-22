@@ -3,18 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 int main(void) { /*for checks, delete later*/
-    m_index         rows, cols, i, j;
+    m_index i, j;
+    /*
     matrix         *my_mat;
     matrix_element *vec;
     matrix_element *get_vec;
 
     rows = 5;
     cols = 5;
+
     my_mat = get_empty_matrix(rows, cols);
-    /*
+
     set_matrix_elem(my_mat, 2, 3, 54);
     printf("%f\n", get_matrix_elem(my_mat, 1, 3));
-*/
+
     vec = malloc(cols * sizeof(matrix_element *));
 
     for ( j = 0; j < cols; j++ ) {
@@ -37,6 +39,36 @@ int main(void) { /*for checks, delete later*/
     }
 
     free_matrix(my_mat);
+    */
+    matrix *m1, *m2, *result;
+    m1 = get_empty_matrix(2, 3);
+    m2 = get_empty_matrix(3, 4);
+    result = get_empty_matrix(m1->num_rows, m2->num_cols);
+    for ( i = 0; i < m1->num_rows; i++ ) {
+        for ( j = 0; j < m1->num_cols; j++ ) {
+            set_matrix_elem(m1, i, j, i + j);
+        }
+    }
+
+    for ( i = 0; i < m2->num_rows; i++ ) {
+        for ( j = 0; j < m2->num_cols; j++ ) {
+            set_matrix_elem(m2, i, j, i + j);
+        }
+    }
+    for ( i = 0; i < m2->num_rows; i++ ) {
+        for ( j = 0; j < m2->num_cols; j++ ) {
+            printf("%f ", m2->data[i][j]);
+        }
+        printf("\n");
+    }
+    multiply_matrices(m1, m2, result);
+    for ( i = 0; i < result->num_rows; i++ ) {
+        for ( j = 0; j < result->num_cols; j++ ) {
+            printf("%f ", result->data[i][j]);
+        }
+        printf("\n");
+    }
+
     return 0;
 }
 
@@ -103,5 +135,23 @@ matrix_element *get_matrix_vec(const struct matrix *matrix, m_index i) {
 int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec) {
     free(matrix->data[i]);
     matrix->data[i] = vec;
+    return 1;
+}
+
+int multiply_matrices(const struct matrix *m1, const struct matrix *m2,
+                      struct matrix *result) {
+    m_index i, j, k;
+    ASSERT_MATRIX_DIM(m1, m1->num_rows, m2->num_rows);
+    ASSERT_MATRIX_DIM(result, m1->num_rows, m2->num_cols);
+    for ( i = 0; i < m1->num_rows; i++ ) {
+        for ( j = 0; j < m2->num_cols; j++ ) {
+            result->data[i][j] = 0;
+
+            for ( k = 0; k < m2->num_rows; k++ ) {
+                result->data[i][j] += m1->data[i][k] * m2->data[k][j];
+            }
+        }
+    }
+
     return 1;
 }
