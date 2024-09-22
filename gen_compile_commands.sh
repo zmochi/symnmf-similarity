@@ -10,10 +10,10 @@ error() {
 }
 
 # should output with -I for each include
-PYTHON_INCLUDES="$(python3-config --includes)" || trap 'error "error executing command \`python3-config --includes\`"' EXIT
 PROJ_DIR="$(pwd)"
-COURSE_COMPILE_CMD="gcc -xc -ansi -Wall -Wextra -Werror -pedantic-errors"
-PYTHON_COMPILE_CMD="gcc -xc -Wall -Wextra $PYTHON_INCLUDES"
+CC="$1"
+COURSE_COMPILE_CMD="$CC $2"
+PYTHON_COMPILE_CMD="$CC $3"
 C_FILES=(**/*.{c,h})
 COURSE_COMPILED_FILES=()
 PYTHON_COMPILED_FILES=()
