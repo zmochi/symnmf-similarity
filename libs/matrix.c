@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 int main(void) { /*for checks, delete later*/
-    m_index i, j;
-    /*
+    m_index         i, j, rows, cols;
     matrix         *my_mat;
     matrix_element *vec;
     matrix_element *get_vec;
+    matrix         *m1, *m2, *result;
 
     rows = 5;
     cols = 5;
@@ -15,9 +15,9 @@ int main(void) { /*for checks, delete later*/
     my_mat = get_empty_matrix(rows, cols);
 
     set_matrix_elem(my_mat, 2, 3, 54);
-    printf("%f\n", get_matrix_elem(my_mat, 1, 3));
+    printf("%f\n", get_matrix_elem(my_mat, 2, 3));
 
-    vec = malloc(cols * sizeof(matrix_element *));
+    vec = malloc(cols * sizeof(matrix_element));
 
     for ( j = 0; j < cols; j++ ) {
         vec[j] = j;
@@ -38,33 +38,28 @@ int main(void) { /*for checks, delete later*/
         printf("\n");
     }
 
-    free_matrix(my_mat);
-    */
-    matrix *m1, *m2, *result;
     m1 = get_empty_matrix(2, 3);
-    m2 = get_empty_matrix(2, 3);
-    result = get_empty_matrix(m1->num_rows, m1->num_cols);
+    m2 = get_empty_matrix(3, 4);
+    result = get_empty_matrix(m1->num_rows, m2->num_cols);
     for ( i = 0; i < m1->num_rows; i++ ) {
         for ( j = 0; j < m1->num_cols; j++ ) {
-            set_matrix_elem(m1, i, j, i + j + i);
+            set_matrix_elem(m1, i, j, i + j);
+        }
+    }
+
+    for ( i = 0; i < m2->num_rows; i++ ) {
+        for ( j = 0; j < m2->num_cols; j++ ) {
             set_matrix_elem(m2, i, j, i + j);
         }
     }
-    /*
-    for ( i = 0; i < m2->num_rows; i++ ) {
-        for ( j = 0; j < m2->num_cols; j++ ) {
-            printf("%f ", m2->data[i][j]);
-        }
-        printf("\n");
-    }
-    subtract_matrices(m1, m2, result);
+    multiply_matrices(m1, m2, result);
     for ( i = 0; i < result->num_rows; i++ ) {
         for ( j = 0; j < result->num_cols; j++ ) {
             printf("%f ", result->data[i][j]);
         }
         printf("\n");
     }
-    */
+
     result = get_empty_matrix(m1->num_cols, m1->num_rows);
     transpose_matrix(m1, result);
     for ( i = 0; i < m1->num_rows; i++ ) {
@@ -81,6 +76,9 @@ int main(void) { /*for checks, delete later*/
         }
         printf("\n");
     }
+
+    free_matrix(my_mat);
+
     return 0;
 }
 
@@ -93,7 +91,7 @@ matrix *get_new_matrix(m_index rows, m_index cols) {
     new_mat->data = malloc(rows * sizeof(matrix_element *));
     CHECK_ALLOC_FAIL(new_mat->data);
     for ( i = 0; i < rows; i++ ) {
-        new_mat->data[i] = malloc(cols * sizeof(matrix_element *));
+        new_mat->data[i] = malloc(cols * sizeof(matrix_element));
         CHECK_ALLOC_FAIL(new_mat->data[i]);
     }
 
@@ -144,6 +142,9 @@ matrix_element *get_matrix_vec(const matrix *matrix, m_index i) {
 }
 
 int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec) {
+    /*if ( sizeof(*vec) / sizeof(matrix_element *) != matrix->num_cols ) {
+        LOG_ABORT("Vector has wrong dimensions");
+    }*/
     free(matrix->data[i]);
     matrix->data[i] = vec;
     return 0;
