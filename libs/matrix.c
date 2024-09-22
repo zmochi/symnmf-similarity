@@ -61,6 +61,7 @@ int main(void) { /*for checks, delete later*/
     }
 
     result = get_empty_matrix(m1->num_cols, m1->num_rows);
+
     transpose_matrix(m1, result);
     for ( i = 0; i < m1->num_rows; i++ ) {
         for ( j = 0; j < m1->num_cols; j++ ) {
@@ -70,6 +71,16 @@ int main(void) { /*for checks, delete later*/
     }
     printf("\n");
 
+    for ( i = 0; i < result->num_rows; i++ ) {
+        for ( j = 0; j < result->num_cols; j++ ) {
+            printf("%f ", result->data[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+
+    result = get_empty_matrix(m1->num_rows, m1->num_cols);
+    copy_matrix(m1, result);
     for ( i = 0; i < result->num_rows; i++ ) {
         for ( j = 0; j < result->num_cols; j++ ) {
             printf("%f ", result->data[i][j]);
@@ -187,5 +198,13 @@ int transpose_matrix(const matrix *matrix, struct matrix *transposed) {
     for ( i = 0; i < transposed->num_rows; i++ )
         for ( j = 0; j < transposed->num_cols; j++ )
             transposed->data[i][j] = matrix->data[j][i];
+    return 0;
+}
+int copy_matrix(const matrix *original, matrix *copy) {
+    m_index i, j;
+    ASSERT_MATRIX_DIM(copy, original->num_rows, original->num_cols);
+    for ( i = 0; i < original->num_rows; i++ )
+        for ( j = 0; j < original->num_cols; j++ )
+            copy->data[i][j] = original->data[i][j];
     return 0;
 }
