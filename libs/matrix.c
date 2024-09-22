@@ -3,13 +3,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 int main(void) { /*for checks, delete later*/
-    m_index rows, cols, i, j;
-    matrix *my_mat;
+    m_index         rows, cols, i, j;
+    matrix         *my_mat;
+    matrix_element *vec;
+    matrix_element *get_vec;
+
     rows = 5;
     cols = 5;
     my_mat = get_empty_matrix(rows, cols);
+    /*
     set_matrix_elem(my_mat, 2, 3, 54);
     printf("%f\n", get_matrix_elem(my_mat, 1, 3));
+*/
+    vec = malloc(cols * sizeof(matrix_element *));
+
+    for ( j = 0; j < cols; j++ ) {
+        vec[j] = j;
+    }
+
+    set_matrix_vec(my_mat, 0, vec);
+    get_vec = get_matrix_vec(my_mat, 0);
+
+    for ( j = 0; j < cols; j++ ) {
+        printf("%f ", get_vec[j]);
+    }
+    printf("\n");
+
     for ( i = 0; i < rows; i++ ) {
         for ( j = 0; j < cols; j++ ) {
             printf("%f ", my_mat->data[i][j]);
@@ -75,4 +94,14 @@ matrix_element set_matrix_elem(struct matrix *matrix, m_index i, m_index j,
 matrix_element get_matrix_elem(const struct matrix *matrix, m_index i,
                                m_index j) {
     return matrix->data[i][j];
+}
+
+matrix_element *get_matrix_vec(const struct matrix *matrix, m_index i) {
+    return matrix->data[i];
+}
+
+int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec) {
+    free(matrix->data[i]);
+    matrix->data[i] = vec;
+    return 1;
 }
