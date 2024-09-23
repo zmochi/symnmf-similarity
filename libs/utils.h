@@ -4,7 +4,8 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
-#define LOG_ERR(err_msg) fprintf(stderr, "ERROR: %s: " err_msg "\n", __func__)
+#define LOG_ERR(err_msg)                                                       \
+    fprintf(stderr, "ERROR: %s at line %d: " err_msg "\n", __func__, __LINE__)
 #define LOG_ERR1(fmt, arg)                                                     \
     fprintf(stderr, "ERROR: %s: " fmt "\n", __func__, arg)
 #define LOG1(fmt, arg) printf("%s: " fmt "\n", __func__, arg)
