@@ -1,9 +1,9 @@
 #include "matrix.h"
 #include "utils.h"
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
-int main(void) { /*for checks, delete later*/
+/*
+int main(void) {
     m_index         i, j, rows, cols;
     matrix         *my_mat;
     matrix_element *vec;
@@ -110,7 +110,7 @@ int main(void) { /*for checks, delete later*/
 
     return 0;
 }
-
+*/
 matrix *get_new_matrix(m_index rows, m_index cols) {
     m_index i;
     matrix *new_mat = malloc(sizeof(matrix));
