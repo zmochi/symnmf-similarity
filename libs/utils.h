@@ -3,19 +3,12 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
-/* returns size of statically allocated array */
-#define ARR_SIZE(arr) ((size_t)(sizeof(arr) / sizeof(arr[0])))
-
-#define LOG1(fmt, arg) printf(fmt, arg);
-
-#define LOG_ERR(err_msg) fprintf(stderr, "ERROR: %s:" err_msg "\n", __func__)
-#define LOG_ERR1(err_msg, fmt1)                                                \
-    fprintf(stderr, "ERROR: %s:" err_msg "\n", __func__, fmt1)
+#define LOG_ERR(err_msg) fprintf(stderr, "ERROR: %s" err_msg "\n", __func__)
 
 #define CHECK_ALLOC_FAIL(ptr)                                                  \
     if ( ptr == NULL ) {                                                       \
         LOG_ERR("an error has occured");                                       \
-        exit(1);                                                   \
+        exit(1);                                                               \
     }
 
 #define LOG_ABORT(fmt)                                                         \
@@ -40,5 +33,19 @@
 
 #define ASSERT_SQUARE_MATRIX(matrix_ptr)                                       \
     ASSERT_MATRIX_DIM(matrix_ptr, matrix_ptr->num_rows, matrix_ptr->num_rows)
+
+#define ASSERT_DIAGONAL_MATRIX(matrix_ptr)                                     \
+    {                                                                          \
+        for ( i = 0; i < matrix->num_rows; i++ ) {                             \
+            for ( j = 0; j < matrix->num_cols; j++ ) {                         \
+                if ( i != j ) {                                                \
+                    if ( matrix->data[i][j] != 0 ) {                           \
+                        LOG_ABORT("The matrix is not diagonal, cannot raise "  \
+                                  "to power");                                 \
+                    }                                                          \
+                }                                                              \
+            }                                                                  \
+        }                                                                      \
+    }
 
 #endif /* __UTILS_H */
