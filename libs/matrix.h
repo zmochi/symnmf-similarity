@@ -56,7 +56,8 @@ matrix_element *get_matrix_vec(const matrix *matrix, m_index i);
  * @param vec a malloc'd array of matrix_element to set
  * @return 0 on success, 1 on failure
  */
-int set_matrix_vec(matrix *matrix, m_index i, matrix_element *vec);
+int set_matrix_vec(matrix *matrix, m_index i, matrix_element *vec,
+                   m_index size);
 
 /* !! make sure to handle overflow properly !! */
 
