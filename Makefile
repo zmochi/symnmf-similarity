@@ -26,6 +26,11 @@ define add_path_prefix
 $(patsubst %,$(2)/%,$(1))
 endef
 
+nodebug: all
+
+debug: CFLAGS += -g
+debug: all
+
 all: directories ${OBJS}
 	$(CC) $(CFLAGS) $(LIB_LINK_FLAGS) -o $(EXECUTABLE_NAME) $(OBJS)
 
