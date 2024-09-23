@@ -97,7 +97,6 @@ int main(void) { /*for checks, delete later*/
     for ( i = 0; i < m1->num_rows; i++ ) {
         m1->data[i][i] = 3;
     }
-
     result = get_empty_matrix(m1->num_rows, m1->num_cols);
     pow_matrix(m1, result, -0.5);
     for ( i = 0; i < result->num_rows; i++ ) {
@@ -229,10 +228,10 @@ int copy_matrix(const matrix *original, matrix *copy) {
 }
 
 int pow_matrix(matrix *matrix, struct matrix *result, double power) {
-    m_index i;
+    m_index i, j;
     ASSERT_SQUARE_MATRIX(matrix);
     ASSERT_MATRIX_DIM(result, matrix->num_rows, matrix->num_cols);
-    /*check if diaginal*/
+    ASSERT_DIAGONAL_MATRIX(matrix);
     copy_matrix(matrix, result);
     for ( i = 0; i < matrix->num_rows; i++ ) {
         result->data[i][i] = pow(matrix->data[i][i], power);
