@@ -170,10 +170,11 @@ matrix_element *get_matrix_vec(const matrix *matrix, m_index i) {
     return matrix->data[i];
 }
 
-int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec) {
-    /*if ( sizeof(*vec) / sizeof(matrix_element *) != matrix->num_cols ) {
+int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec,
+                   m_index size) {
+    if ( size != matrix->num_cols ) {
         LOG_ABORT("Vector has wrong dimensions");
-    }*/
+    }
     free(matrix->data[i]);
     matrix->data[i] = vec;
     return 0;
