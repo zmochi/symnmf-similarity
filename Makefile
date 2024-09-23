@@ -32,7 +32,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c ${H_DEPS} | directories
 	$(CC) $(CFLAGS) -c $< -o $@
 
 directories:
-	mkdir -p ${OBJ_DIR}
+	mkdir -p ${OBJ_DIR} ${OBJ_LIB_DIR}
 
 # flags for compile_commands.json
 PY_CFLAGS = -Wall -Wextra ${PY_C_INCLUDES}
