@@ -182,17 +182,27 @@ int set_matrix_vec(struct matrix *matrix, m_index i, matrix_element *vec,
 
 int multiply_matrices(const matrix *m1, const matrix *m2,
                       struct matrix *result) {
-    m_index i, j, k;
+    m_index        i, j, k;
+    struct matrix *output = result;
+    int            isolate_result = (result == m1 || result == m2);
+    if ( isolate_result )
+        output = get_new_matrix(result->num_rows, result->num_cols);
+
     ASSERT_MATRIX_DIM(m1, m1->num_rows, m2->num_rows);
     ASSERT_MATRIX_DIM(result, m1->num_rows, m2->num_cols);
     for ( i = 0; i < m1->num_rows; i++ ) {
         for ( j = 0; j < m2->num_cols; j++ ) {
-            result->data[i][j] = 0;
+            output->data[i][j] = 0;
 
             for ( k = 0; k < m2->num_rows; k++ ) {
-                result->data[i][j] += m1->data[i][k] * m2->data[k][j];
+                output->data[i][j] += m1->data[i][k] * m2->data[k][j];
             }
         }
+    }
+
+    if ( isolate_result ) {
+        copy_matrix(output, result);
+        free_matrix(output);
     }
 
     return 0;
