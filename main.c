@@ -2,6 +2,7 @@
 #include "libs/utils.h"
 #include "symnmf.h"
 
+#include <_strings.h>
 #include <errno.h>    /* for errno */
 #include <stdio.h>    /* for file reading ops */
 #include <string.h>   /* for strerror() */
@@ -30,7 +31,7 @@ enum usr_goal { SYM, DDG, NORM, UNKNOWN };
  * call free_filebuf() to free the buffer after use
  */
 char *load_filebuf(FILE *file, size_t *filesize) {
-    const char *file_contents;
+    char       *file_contents;
     struct stat file_stat;
     int         fd = fileno(file);
 
@@ -51,7 +52,7 @@ char *load_filebuf(FILE *file, size_t *filesize) {
 
     *filesize = file_stat.st_size;
 
-    return 0;
+    return file_contents;
 }
 
 int free_filebuf(char *buf, size_t file_size) {
@@ -86,10 +87,11 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
                 break;
 
             case LINE_DELIM:
-                points_dims[num_vecs] = vec_dim;
+                vec_dim++;
+                points_dims[num_vecs++] = vec_dim;
                 vec_dim = 0;
-                num_vecs++;
                 data[data_offset] = NUL_BYTE;
+
                 if ( num_vecs > points_capacity ) {
                     vec = realloc(points_dims, REALLOC_MUL * points_capacity);
                     points_capacity *= REALLOC_MUL;
@@ -100,15 +102,15 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
     }
 
     matrix = get_new_matrix(num_vecs, points_dims[0]);
-    vec = malloc(sizeof(matrix_element *) * num_vecs);
     data_offset = 0;
     num = data;
 
     for ( vec_index = 0; vec_index < num_vecs; vec_index++ ) {
-        vec = malloc(sizeof(matrix_element) * points_dims[vec_index]);
         /* check all vectors have matching dimensions */
-        if ( points_dims[vec_index] != matrix->num_cols )
+        if ( points_dims[vec_index] != points_dims[0] )
             RETURN_ERR("input vectors have mismatching dimensions", NULL);
+
+        vec = malloc(sizeof(matrix_element) * points_dims[vec_index]);
 
         for ( vec_elem = 0; vec_elem < points_dims[vec_index]; vec_elem++ ) {
             vec[vec_elem] = strtod(num, &endptr);
@@ -120,7 +122,8 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
                 return NULL;
         }
 
-        if ( set_matrix_vec(matrix, vec_index, vec) != 0 ) {
+        if ( set_matrix_vec(matrix, vec_index, vec, points_dims[vec_index]) !=
+             0 ) {
             LOG_ERR("Couldn't set matrix vector");
             return NULL;
         }
@@ -157,10 +160,14 @@ int main(int argc, char **argv) {
     FILE          *usr_file;
     size_t         usr_filesize;
     char          *data;
-    struct matrix *input_matrix, *output_matrix;
+    struct matrix *input_matrix, *output_matrix, *intermediate_matrix;
+    size_t         N, d;
+    (void)d; /* suppress unused variable warning */
+
 #define main_free_matrices                                                     \
     do {                                                                       \
         free_matrix(input_matrix);                                             \
+        free_matrix(intermediate_matrix);                                      \
         free_matrix(output_matrix);                                            \
     } while ( 0 )
 
@@ -180,11 +187,15 @@ int main(int argc, char **argv) {
 
     input_matrix = parse_data_to_matrix(data, usr_filesize);
 
+    N = input_matrix->num_rows;
+    d = input_matrix->num_cols;
+
     free_filebuf(data, usr_filesize);
     fclose(usr_file);
 
-    output_matrix =
-        get_new_matrix(input_matrix->num_rows, input_matrix->num_cols);
+    intermediate_matrix = get_new_matrix(N, N);
+    /* all targets require an output matrix of size NxN so allocate once here */
+    output_matrix = get_new_matrix(N, N);
 
     switch ( parse_usr_goal(argv[1]) ) {
         case SYM:
@@ -196,12 +207,12 @@ int main(int argc, char **argv) {
             break;
 
         case DDG:
-            if ( sym_matrix(input_matrix, input_matrix) != 0 ) {
+            if ( sym_matrix(input_matrix, intermediate_matrix) != 0 ) {
                 main_free_matrices;
                 RETURN_ERR("Couldn't calculate similarity matrix",
                            EXIT_FAILURE);
             }
-            if ( deg_matrix(input_matrix, output_matrix) != 0 ) {
+            if ( deg_matrix(intermediate_matrix, output_matrix) != 0 ) {
                 main_free_matrices;
                 RETURN_ERR("Couldn't calculate diagonal degree matrix",
                            EXIT_FAILURE);
@@ -209,7 +220,12 @@ int main(int argc, char **argv) {
             break;
 
         case NORM:
-            if ( W_matrix(input_matrix, output_matrix) != 0 ) {
+            if ( sym_matrix(input_matrix, intermediate_matrix) != 0 ) {
+                main_free_matrices;
+                RETURN_ERR("Couldn't calculate similarity matrix",
+                           EXIT_FAILURE);
+            }
+            if ( W_matrix(intermediate_matrix, output_matrix) != 0 ) {
                 main_free_matrices;
                 RETURN_ERR("Couldn't calculate normalized similarity matrix",
                            EXIT_FAILURE);

@@ -27,7 +27,7 @@ static matrix_element calc_sym_elem(const matrix_element *x_i,
 
 int sym_matrix(const struct matrix *X, struct matrix *sym) {
     size_t          i, j;
-    m_index         d = X->num_rows, N = X->num_cols;
+    m_index         d = X->num_cols, N = X->num_rows;
     matrix_element *x_i, *x_j;
     matrix_element  a_ij;
 
@@ -41,10 +41,11 @@ int sym_matrix(const struct matrix *X, struct matrix *sym) {
 
             if ( i == j )
                 a_ij = 0;
-            else
+            else {
                 a_ij = calc_sym_elem(x_i, x_j, d);
+                assert(a_ij > 0);
+            }
 
-            assert(a_ij > 0);
             set_matrix_elem(sym, i, j, a_ij);
         }
 
@@ -60,7 +61,7 @@ int sym_matrix(const struct matrix *X, struct matrix *sym) {
 
 int deg_matrix(const struct matrix *sym_matrix, struct matrix *deg) {
     size_t         i, j;
-    m_index        n = sym_matrix->num_cols;
+    m_index        n = sym_matrix->num_rows;
     matrix_element d_i;
 
     ASSERT_SQUARE_MATRIX(sym_matrix);
@@ -82,23 +83,36 @@ int W_matrix(const struct matrix *sym, struct matrix *W) {
     m_index        n = sym->num_rows;
     struct matrix *prod = get_new_matrix(n, n), *deg = get_new_matrix(n, n);
 
-    if ( deg_matrix(sym, deg) != 0 )
+#define free_w                                                                 \
+    do {                                                                       \
+        free_matrix(prod);                                                     \
+        free_matrix(deg);                                                      \
+    } while ( 0 )
+
+    if ( deg_matrix(sym, deg) != 0 ) {
         RETURN_ERR("Couldn't calculate degree matrix", err);
+        free_w;
+    }
 
-    if ( copy_matrix(deg, prod) != 0 )
+    if ( copy_matrix(deg, prod) != 0 ) {
         RETURN_ERR("Couldn't copy deg matrix", err);
+        free_w;
+    }
 
-    if ( pow_matrix(prod, prod, -1.0 / 2.0) != 0 )
+    if ( pow_matrix(prod, prod, -1.0 / 2.0) != 0 ) {
         RETURN_ERR("Couldn't raise left_prod to power -1/2", err);
+        free_w;
+    }
 
-    if ( multiply_matrices(prod, sym, W) != 0 )
+    if ( multiply_matrices(prod, sym, W) != 0 ) {
         RETURN_ERR("Couldn't multiply matrices prod * sym into w", err);
+        free_w;
+    }
 
-    if ( multiply_matrices(W, prod, W) != 0 )
+    if ( multiply_matrices(W, prod, W) != 0 ) {
         RETURN_ERR("Couldn't multiply matrices sym * w into w", err);
-
-    free_matrix(prod);
-    free_matrix(deg);
+        free_w;
+    }
 
     return success;
 }
