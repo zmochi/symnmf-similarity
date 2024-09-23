@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
         free_matrix(output_matrix);                                            \
     } while ( 0 )
 
-    if ( argc != 2 ) {
+    if ( argc != 3 ) {
         LOG1("Usage: %s <[sym | ddg | norm]> <filepath>", argv[0]);
         return EXIT_FAILURE;
     }
