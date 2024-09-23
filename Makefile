@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors
+LIB_LINK_FLAGS = -lm
 
 EXECUTABLE_NAME = symnmf
 PROJ_ROOT = .
@@ -26,7 +27,7 @@ $(patsubst %,$(2)/%,$(1))
 endef
 
 all: directories ${OBJS}
-	$(CC) $(CFLAGS) -o $(EXECUTABLE_NAME) $(OBJS)
+	$(CC) $(CFLAGS) $(LIB_LINK_FLAGS) -o $(EXECUTABLE_NAME) $(OBJS)
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c ${H_DEPS} | directories
 	$(CC) $(CFLAGS) -c $< -o $@
