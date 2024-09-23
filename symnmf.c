@@ -88,7 +88,7 @@ int W_matrix(const struct matrix *sym, struct matrix *W) {
     if ( copy_matrix(deg, prod) != 0 )
         RETURN_ERR("Couldn't copy deg matrix", err);
 
-    if ( pow_matrix(prod, -1.0 / 2.0) != 0 )
+    if ( pow_matrix(prod, prod, -1.0 / 2.0) != 0 )
         RETURN_ERR("Couldn't raise left_prod to power -1/2", err);
 
     if ( multiply_matrices(prod, sym, W) != 0 )
