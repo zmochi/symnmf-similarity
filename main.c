@@ -2,7 +2,6 @@
 #include "libs/utils.h"
 #include "symnmf.h"
 
-#include <_strings.h>
 #include <errno.h>    /* for errno */
 #include <stdio.h>    /* for file reading ops */
 #include <string.h>   /* for strerror() */
@@ -69,11 +68,12 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
 #define REALLOC_MUL   2
 #define INIT_NUM_VECS (1 << 5) /* 32 */
 
-    struct matrix  *matrix;
-    size_t          vec_index, vec_elem, vec_dim = 0, num_vecs = 0;
-    size_t         *points_dims = malloc(sizeof(size_t) * INIT_NUM_VECS);
+    struct matrix *matrix;
+    size_t         vec_index, vec_elem, vec_dim = 0, num_vecs = 0;
+    size_t        *points_dims = malloc(sizeof(size_t) * INIT_NUM_VECS),
+           points_capacity = INIT_NUM_VECS;
     matrix_element *vec;
-    size_t          data_offset = 0, points_capacity = INIT_NUM_VECS;
+    size_t          data_offset = 0;
     char           *num, *endptr;
 
     /* replaces every NUM_DELIM or LINE_DELIM instances in a null byte to use
@@ -110,9 +110,9 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
         if ( points_dims[vec_index] != points_dims[0] )
             RETURN_ERR("input vectors have mismatching dimensions", NULL);
 
-        vec = malloc(sizeof(matrix_element) * points_dims[vec_index]);
+        vec = malloc(sizeof(matrix_element) * points_dims[0]);
 
-        for ( vec_elem = 0; vec_elem < points_dims[vec_index]; vec_elem++ ) {
+        for ( vec_elem = 0; vec_elem < points_dims[0]; vec_elem++ ) {
             vec[vec_elem] = strtod(num, &endptr);
 
             if ( *endptr == NUL_BYTE )
@@ -122,12 +122,13 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
                 return NULL;
         }
 
-        if ( set_matrix_vec(matrix, vec_index, vec, points_dims[vec_index]) !=
-             0 ) {
+        if ( set_matrix_vec(matrix, vec_index, vec, points_dims[0]) != 0 ) {
             LOG_ERR("Couldn't set matrix vector");
             return NULL;
         }
     }
+
+    free(points_dims);
 
     return matrix;
 }
