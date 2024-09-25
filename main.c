@@ -70,7 +70,8 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
 
     struct matrix *matrix;
     size_t         vec_index, vec_elem, vec_dim = 0, num_vecs = 0;
-    size_t        *points_dims = malloc(sizeof(size_t) * INIT_NUM_VECS),
+    /* dynamically allocated since this may be resized */
+    size_t *points_dims = malloc(sizeof(size_t) * INIT_NUM_VECS),
            points_capacity = INIT_NUM_VECS;
     matrix_element *vec;
     size_t          data_offset = 0;
