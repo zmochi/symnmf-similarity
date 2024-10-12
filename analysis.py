@@ -3,21 +3,23 @@ import numpy as np
 import pandas as pd
 import sys
 from kmeans import kMeans
-
+import symnmf
 
 def main():
     k=sys.argv[1]
     text_name = sys.argv[2]
     points=parse_points(text_name)
     k=parse_k(k, len(points))
-    # print(k)
-    # print(points)
+    # score_for_nmf(points,k)
+    score_for_kmeans(points,k)
    
+    
+
+
+def score_for_kmeans(points, k):
     kms_lables=kMeans(points,k)
     score = silhouette_score(points, kms_lables, metric='euclidean')
     print(f"kmeans: {score:.4f}")
-
-
 
 def parse_cmdline_arg(arg_str):
     try:
