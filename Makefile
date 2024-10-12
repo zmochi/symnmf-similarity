@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors
+CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors -D_POSIX_SOURCE
 LIB_LINK_FLAGS = -lm
 
 EXECUTABLE_NAME = symnmf
