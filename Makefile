@@ -32,7 +32,7 @@ debug: CFLAGS += -g
 debug: all
 
 all: directories ${OBJS}
-	$(CC) $(CFLAGS) $(LIB_LINK_FLAGS) -o $(EXECUTABLE_NAME) $(OBJS)
+	$(CC) $(CFLAGS) -o $(EXECUTABLE_NAME) $(OBJS) $(LIB_LINK_FLAGS)
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c ${H_DEPS} | directories
 	$(CC) $(CFLAGS) -c $< -o $@

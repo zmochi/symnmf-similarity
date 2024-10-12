@@ -13,10 +13,9 @@
 #endif /* __STDC_VERSION__ */
 
 #define LOG_ERR(err_msg)                                                       \
-    fprintf(stderr, "ERROR: %s at line %d: " err_msg "\n", __func__, __LINE__)
-#define LOG_ERR1(fmt, arg)                                                     \
-    fprintf(stderr, "ERROR: %s: " fmt "\n", __func__, arg)
-#define LOG1(fmt, arg) printf("%s: " fmt "\n", __func__, arg)
+    fprintf(stderr, "ERROR: at line %d: " err_msg "\n", __LINE__)
+#define LOG_ERR1(fmt, arg) fprintf(stderr, "ERROR: " fmt "\n", arg)
+#define LOG1(fmt, arg)     printf(fmt "\n", arg)
 
 #define CHECK_ALLOC_FAIL(ptr)                                                  \
     if ( ptr == NULL ) {                                                       \
