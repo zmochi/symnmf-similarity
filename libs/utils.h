@@ -4,6 +4,14 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
+#if __STDC_VERSION__ < 199901L
+#if __GNUC__ >= 2
+#define __func__ __FUNCTION__
+#else
+#define __func__ "<unknown>"
+#endif /* __GNUC__ */
+#endif /* __STDC_VERSION__ */
+
 #define LOG_ERR(err_msg)                                                       \
     fprintf(stderr, "ERROR: %s at line %d: " err_msg "\n", __func__, __LINE__)
 #define LOG_ERR1(fmt, arg)                                                     \
