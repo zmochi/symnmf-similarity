@@ -160,7 +160,7 @@ static int calc_next_H(const struct matrix *H, const struct matrix *W,
                            H_HT_H_ij = get_matrix_elem(H_HT_H, i, j);
 
             matrix_element next_H_ij =
-                H_ij * (1 - beta + beta * (W_H_ij / H_HT_H_ij));
+                H_ij * (1 - beta + (beta * (W_H_ij / H_HT_H_ij)));
 
             set_matrix_elem(next_H, i, j, next_H_ij);
         }

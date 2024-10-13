@@ -192,7 +192,7 @@ static PyObject *symnmf(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    optimize_H(init_H, W, beta, epsilon, iter, optimized_H);
+    optimize_H(init_H, W, beta, epsilon, (size_t)iter, optimized_H);
     py_optimized_H = c_matrix_to_py(optimized_H);
 
     symnmf_free;
