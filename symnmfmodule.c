@@ -151,7 +151,7 @@ static PyObject *symnmf(PyObject *self, PyObject *args) {
     int            status;
     PyObject      *py_init_H, *py_W, *py_optimized_H;
     double         epsilon, beta;
-    int            iter;
+    size_t         iter;
     struct matrix *init_H, *W, *optimized_H;
 
     status = PyArg_ParseTuple(args, "OOddn", &py_init_H, &py_W, &beta, &epsilon,
