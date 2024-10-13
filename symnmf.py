@@ -72,7 +72,6 @@ def parse_goal(k, goal, points):
     if goal == "symnmf":
         normalized_matrix=symnmfmodule.norm(points)
         iH=init_H(k, points)
-        print(epsilon)
         matrix=symnmfmodule.symnmf(iH,normalized_matrix,beta,epsilon,max_iter)
     elif goal == "sym":
         matrix = symnmfmodule.sym(points)
