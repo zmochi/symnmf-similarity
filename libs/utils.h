@@ -35,6 +35,14 @@
         return ret;                                                            \
     } while ( 0 )
 
+#define CHECK_RET_MATRIX_DIM(matrix_ptr, rows, cols, retval)                   \
+    do {                                                                       \
+        if ( matrix_ptr->num_rows != rows || matrix_ptr->num_cols != cols ) {  \
+            LOG_ERR("Matrix has wrong dimensions");                            \
+            return retval;                                                     \
+        }                                                                      \
+    } while ( 0 )
+
 /* assertions are used for logical program constraints and not runtime errors */
 
 #define ASSERT_MATRIX_DIM(matrix_ptr, rows, cols)                              \

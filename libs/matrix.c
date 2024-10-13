@@ -188,8 +188,8 @@ int multiply_matrices(const matrix *m1, const matrix *m2,
     if ( isolate_result )
         output = get_new_matrix(result->num_rows, result->num_cols);
 
-    ASSERT_MATRIX_DIM(m1, m1->num_rows, m2->num_rows);
-    ASSERT_MATRIX_DIM(result, m1->num_rows, m2->num_cols);
+    CHECK_RET_MATRIX_DIM(m1, m1->num_rows, m2->num_rows, 1);
+    CHECK_RET_MATRIX_DIM(result, m1->num_rows, m2->num_cols, 1);
     for ( i = 0; i < m1->num_rows; i++ ) {
         for ( j = 0; j < m2->num_cols; j++ ) {
             output->data[i][j] = 0;

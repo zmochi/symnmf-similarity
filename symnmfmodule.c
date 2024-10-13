@@ -19,9 +19,9 @@
  * @return 0 on success, 1 on failure
  */
 static int py_matrix_to_c(PyObject *py_matrix, struct matrix *matrix) {
-    int       success = 0, err = 1;
-    PyObject *py_row_i, *py_matrix_elem;
-    m_index   py_rows = PyList_Size(py_matrix);
+    const int     success = 0, err = 1;
+    PyObject     *py_row_i, *py_matrix_elem;
+    const m_index py_rows = PyList_Size(py_matrix);
 
     py_row_i = PyList_GetItem(py_matrix, 0);
     /* if PyList_GetItem fails, IndexError is set. so no need to set err

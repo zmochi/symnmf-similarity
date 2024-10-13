@@ -122,9 +122,9 @@ int W_matrix(const struct matrix *sym, struct matrix *W) {
  *
  * @param H H(t)
  * @param W normalized similarity matrix
- * @param aux_matrices an array of 3 matrices for internal use, of dimensions
- * ((n,k), (n,k), (k,n)) respectively. this avoids the overhead of allocating
- * and freeing a new matrix on each call to this function
+ * @param aux_matrices an array of 4 matrices for internal use, of dimensions
+ * ((n,k), (k,n), (n,n), (n,k)) respectively. this avoids the overhead of
+ * allocating and freeing a new matrix on each call to this function
  * @param beta beta parameter for calculation
  * @param next_H matrix to store H(t+1) in
  * @return 0 on success, 1 on failure
@@ -134,23 +134,23 @@ static int calc_next_H(const struct matrix *H, const struct matrix *W,
                        struct matrix *next_H) {
     size_t         i, j;
     m_index        n = H->num_rows, k = H->num_cols;
-    struct matrix *W_H = aux_matrices[0], *H_HT_H = aux_matrices[1],
-                  *H_transpose = aux_matrices[2];
+    struct matrix *W_H = aux_matrices[0], *H_HT_H = aux_matrices[3],
+                  *HT = aux_matrices[1], *H_HT = aux_matrices[2];
 
     ASSERT_MATRIX_DIM(W_H, n, k);
+    ASSERT_MATRIX_DIM(HT, k, n);
+    ASSERT_MATRIX_DIM(H_HT, n, n);
     ASSERT_MATRIX_DIM(H_HT_H, n, k);
-    ASSERT_MATRIX_DIM(H_transpose, k, n);
 
-    if ( transpose_matrix(H, H_transpose) != 0 )
-        RETURN_ERR("Couldn't transpose H", err);
+    if ( transpose_matrix(H, HT) != 0 ) RETURN_ERR("Couldn't transpose H", err);
 
     if ( multiply_matrices(W, H, W_H) != 0 )
         RETURN_ERR("Couldn't multiply matrices W*H", err);
 
-    if ( multiply_matrices(H, H_transpose, H_HT_H) != 0 )
+    if ( multiply_matrices(H, HT, H_HT) != 0 )
         RETURN_ERR("Couldn't multiply matrices H*H^T", err);
 
-    if ( multiply_matrices(H_HT_H, H, H_HT_H) != 0 )
+    if ( multiply_matrices(H_HT, H, H_HT_H) != 0 )
         RETURN_ERR("Couldn't multiply matrices (H*H^T)*H", err);
 
     for ( i = 0; i < n; i++ ) {
@@ -177,34 +177,51 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
     size_t         t = 0;
     struct matrix *updated_H = optimized_H, *old_H = get_new_matrix(n, k),
                   *diff_H = get_new_matrix(n, k);
-    struct matrix *aux_matrices[3];
+    struct matrix *aux_matrices[4];
 
     ASSERT_SQUARE_MATRIX(W);
 
     aux_matrices[0] = get_new_matrix(n, k);
-    aux_matrices[1] = get_new_matrix(n, k);
-    aux_matrices[2] = get_new_matrix(k, n);
+    aux_matrices[1] = get_new_matrix(k, n);
+    aux_matrices[2] = get_new_matrix(n, n);
+    aux_matrices[3] = get_new_matrix(n, k);
+#define free_optimize_H                                                        \
+    do {                                                                       \
+        free_matrix(aux_matrices[0]);                                          \
+        free_matrix(aux_matrices[1]);                                          \
+        free_matrix(aux_matrices[2]);                                          \
+        free_matrix(aux_matrices[3]);                                          \
+        free_matrix(old_H);                                                    \
+        free_matrix(diff_H);                                                   \
+    } while ( 0 )
 
-    if ( copy_matrix(init_H, old_H) != 0 )
+    if ( copy_matrix(init_H, old_H) != 0 ) {
         RETURN_ERR("Couldn't copy init_H into old_H", 1);
+        free_optimize_H;
+    }
 
     while ( t < iter ) {
-        if ( calc_next_H(old_H, W, aux_matrices, beta, updated_H) != 0 )
-            RETURN_ERR("Couldn't calculate next H", 1);
+        if ( calc_next_H(old_H, W, aux_matrices, beta, updated_H) != 0 ) {
+            RETURN_ERR("Couldn't calculate next H", err);
+            free_optimize_H;
+        }
 
-        if ( subtract_matrices(updated_H, old_H, diff_H) != 0 )
-            RETURN_ERR("Couldn't subtract matrices", 1);
+        if ( subtract_matrices(updated_H, old_H, diff_H) != 0 ) {
+            RETURN_ERR("Couldn't subtract matrices", err);
+            free_optimize_H;
+        }
 
         if ( squared_frobenius_norm(diff_H) < epsilon ) break;
+
+        if ( copy_matrix(updated_H, old_H) != 0 ) {
+            RETURN_ERR("Couldn't copy updated H into old H", err);
+            free_optimize_H;
+        }
 
         t++;
     }
 
-    free_matrix(aux_matrices[0]);
-    free_matrix(aux_matrices[1]);
-    free_matrix(aux_matrices[2]);
-    free_matrix(old_H);
-    free_matrix(diff_H);
+    free_optimize_H;
 
     return success;
 }
