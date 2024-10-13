@@ -2,8 +2,8 @@
 import math
 import sys
 
-max_iter = 1000
-epsilon = 0.001
+max_iter = 300
+epsilon=math.e**(-4)
 k = ""
 iter = ""
 text_name = ""
