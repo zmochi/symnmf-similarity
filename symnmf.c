@@ -211,12 +211,12 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
             free_optimize_H;
         }
 
-        if ( squared_frobenius_norm(diff_H) < epsilon ) break;
-
         if ( copy_matrix(updated_H, old_H) != 0 ) {
             RETURN_ERR("Couldn't copy updated H into old H", err);
             free_optimize_H;
         }
+
+        if ( squared_frobenius_norm(diff_H) < epsilon ) break;
 
         t++;
     }
