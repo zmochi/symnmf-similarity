@@ -171,12 +171,11 @@ static int calc_next_H(const struct matrix *H, const struct matrix *W,
 
 int optimize_H(const struct matrix *init_H, const struct matrix *W,
                const double beta, const double epsilon, const size_t iter,
-               struct matrix *optimized_H) {
+               struct matrix *updated_H) {
 
     m_index        n = init_H->num_rows, k = init_H->num_cols;
     size_t         t = 0;
-    struct matrix *updated_H = optimized_H, *old_H = get_new_matrix(n, k),
-                  *diff_H = get_new_matrix(n, k);
+    struct matrix *old_H = get_new_matrix(n, k), *diff_H = get_new_matrix(n, k);
     struct matrix *aux_matrices[4];
 
     ASSERT_SQUARE_MATRIX(W);

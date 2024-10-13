@@ -151,10 +151,10 @@ static PyObject *symnmf(PyObject *self, PyObject *args) {
     int            status;
     PyObject      *py_init_H, *py_W, *py_optimized_H;
     double         epsilon, beta;
-    size_t         iter;
+    int            iter;
     struct matrix *init_H, *W, *optimized_H;
 
-    status = PyArg_ParseTuple(args, "OOffn", &py_init_H, &py_W, &beta, &epsilon,
+    status = PyArg_ParseTuple(args, "OOddn", &py_init_H, &py_W, &beta, &epsilon,
                               &iter);
     HANDLE_PY_FAIL(status);
 
