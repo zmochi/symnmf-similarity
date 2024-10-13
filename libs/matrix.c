@@ -239,7 +239,7 @@ int copy_matrix(const matrix *original, matrix *copy) {
 }
 
 int pow_matrix(matrix *matrix, struct matrix *result, double power) {
-    m_index i, j;
+    m_index i;
     ASSERT_SQUARE_MATRIX(matrix);
     ASSERT_MATRIX_DIM(result, matrix->num_rows, matrix->num_cols);
     ASSERT_DIAGONAL_MATRIX(matrix);

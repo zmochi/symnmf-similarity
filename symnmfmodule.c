@@ -255,7 +255,7 @@ static PyObject *ddg(PyObject *self, PyObject *args) {
     N = matrix_X->num_rows;
 
     matrix_sym = get_new_matrix(N, N);
-    matrix_deg = get_new_matrix(N, N);
+    matrix_deg = get_empty_matrix(N, N);
 #define ddg_free                                                               \
     do {                                                                       \
         free_matrix(matrix_X);                                                 \

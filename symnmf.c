@@ -81,7 +81,7 @@ int deg_matrix(const struct matrix *sym_matrix, struct matrix *deg) {
 
 int W_matrix(const struct matrix *sym, struct matrix *W) {
     m_index        n = sym->num_rows;
-    struct matrix *prod = get_new_matrix(n, n), *deg = get_new_matrix(n, n);
+    struct matrix *prod = get_new_matrix(n, n), *deg = get_empty_matrix(n, n);
 
 #define free_w                                                                 \
     do {                                                                       \

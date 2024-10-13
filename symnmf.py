@@ -3,13 +3,14 @@ import pandas as pd
 import sys
 import symnmfmodule
 
+
 def main():
-    k=sys.argv[1]
-    goal=sys.argv[2]
+    k = sys.argv[1]
+    goal = sys.argv[2]
     text_name = sys.argv[3]
-    points=parse_points(text_name)
-    k=parse_k(k, len(points))
-    parse_goal(k,goal,points)
+    points = parse_points(text_name)
+    k = parse_k(k, len(points))
+    parse_goal(k, goal, points)
 
 
 def parse_cmdline_arg(arg_str):
@@ -22,8 +23,9 @@ def parse_cmdline_arg(arg_str):
         return -1  # indicate error with -1 since commandline args shouldn't be negative
     return int(parsed_arg)
 
+
 def parse_points(text_name):
-    points=[]
+    points = []
     type = text_name[-4:]
     if not (type == ".txt"):
         print("An Error Has Occurred")
@@ -38,6 +40,7 @@ def parse_points(text_name):
         points.append(point)
     return points
 
+
 def parse_k(k, len_points):
     k = parse_cmdline_arg(k)
     if not (k > 1 and k < len_points):
@@ -45,20 +48,21 @@ def parse_k(k, len_points):
         exit(1)
     return k
 
+
 def init_H():
     print("H")
 
 
-def parse_goal(k,goal,points):
-    matrix=[]
-    if goal=="symnmf":
+def parse_goal(k, goal, points):
+    matrix = []
+    if goal == "symnmf":
         print("symnmf")
-    elif goal=="sym":
-        matrix=symnmfmodule.sym(points)
-    elif goal=="ddg":
-        matrix=symnmfmodule.ddg(points)
-    elif goal=="norm":
-        matrix=symnmfmodule.norm(points)
+    elif goal == "sym":
+        matrix = symnmfmodule.sym(points)
+    elif goal == "ddg":
+        matrix = symnmfmodule.ddg(points)
+    elif goal == "norm":
+        matrix = symnmfmodule.norm(points)
     output_matrix(matrix)
 
 
@@ -73,4 +77,6 @@ def output_matrix(matrix):
                 line += formated_num
         print(line)
         line = ""
+
+
 main()

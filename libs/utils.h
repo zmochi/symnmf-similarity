@@ -48,10 +48,11 @@
 
 #define ASSERT_DIAGONAL_MATRIX(matrix_ptr)                                     \
     {                                                                          \
-        for ( i = 0; i < matrix->num_rows; i++ ) {                             \
-            for ( j = 0; j < matrix->num_cols; j++ ) {                         \
+        unsigned int i, j;                                                     \
+        for ( i = 0; i < matrix_ptr->num_rows; i++ ) {                         \
+            for ( j = 0; j < matrix_ptr->num_cols; j++ ) {                     \
                 if ( i != j ) {                                                \
-                    if ( matrix->data[i][j] != 0 ) {                           \
+                    if ( matrix_ptr->data[i][j] != 0 ) {                       \
                         LOG_ABORT("The matrix is not diagonal, cannot raise "  \
                                   "to power");                                 \
                     }                                                          \
