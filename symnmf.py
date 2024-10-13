@@ -2,16 +2,20 @@ import numpy as np
 import pandas as pd
 import sys
 import symnmfmodule
+import math
 
-
+max_iter = 300
+epsilon=math.e**(-4)
+beta=0.5
 def main():
+    np.random.seed(1234)
     k = sys.argv[1]
     goal = sys.argv[2]
     text_name = sys.argv[3]
     points = parse_points(text_name)
     k = parse_k(k, len(points))
-    parse_goal(k, goal, points)
-
+    matrix=parse_goal(k, goal, points)
+    output_matrix(matrix)
 
 def parse_cmdline_arg(arg_str):
     try:
@@ -49,21 +53,35 @@ def parse_k(k, len_points):
     return k
 
 
-def init_H():
-    print("H")
+def init_H(k,points):
+    normalized_matrix=symnmfmodule.norm(points)
+    sum=0
+    for i in range(len(normalized_matrix)):
+        for j in range(len(normalized_matrix[0])):
+            sum+=normalized_matrix[i][j]
+    m=sum/(len(normalized_matrix)*len(normalized_matrix[0]))
+    iH=[[] for i in range(len(points))]
+    for i in range(len(points)):
+        for j in range(k):
+            iH[i].append(np.random.uniform(0,2*math.sqrt(m/k)))
+    return iH
 
 
 def parse_goal(k, goal, points):
     matrix = []
     if goal == "symnmf":
-        print("symnmf")
+        normalized_matrix=symnmfmodule.norm(points)
+        iH=init_H(k, points)
+        print(epsilon)
+        matrix=symnmfmodule.symnmf(iH,normalized_matrix,beta,epsilon,max_iter)
     elif goal == "sym":
         matrix = symnmfmodule.sym(points)
     elif goal == "ddg":
         matrix = symnmfmodule.ddg(points)
     elif goal == "norm":
         matrix = symnmfmodule.norm(points)
-    output_matrix(matrix)
+    return matrix
+    
 
 
 def output_matrix(matrix):
