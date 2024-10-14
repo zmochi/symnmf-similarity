@@ -10,7 +10,6 @@ beta = 0.5
 
 
 def main():
-    np.random.seed(1234)
     k = sys.argv[1]
     goal = sys.argv[2]
     text_name = sys.argv[3]
@@ -57,6 +56,7 @@ def parse_k(k, len_points):
 
 
 def init_H(k, points):
+    np.random.seed(1234)
     normalized_matrix = symnmfmodule.norm(points)
     sum = 0
     for i in range(len(normalized_matrix)):
