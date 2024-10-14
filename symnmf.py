@@ -5,7 +5,8 @@ import symnmfmodule
 import math
 
 max_iter = 300
-epsilon = math.e**(-4)
+epsilon = math.e-4
+epsilon=0.0001
 beta = 0.5
 
 
@@ -75,8 +76,7 @@ def parse_goal(k, goal, points):
     if goal == "symnmf":
         normalized_matrix = symnmfmodule.norm(points)
         iH = init_H(k, points)
-        matrix = symnmfmodule.symnmf(
-            iH, normalized_matrix, beta, epsilon, max_iter)
+        matrix = symnmfmodule.symnmf( iH, normalized_matrix, beta, epsilon, max_iter)
     elif goal == "sym":
         matrix = symnmfmodule.sym(points)
     elif goal == "ddg":
