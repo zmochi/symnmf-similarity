@@ -5,7 +5,7 @@ import sys
 from kmeans import kMeans
 import math
 import symnmfmodule
-
+from symnmf import parse_goal_and_calc
 max_iter = 300
 epsilon=0.0001
 beta = 0.5
@@ -25,9 +25,7 @@ def score_for_kmeans(points, k):
     print(f"kmeans: {score:.4f}")
 
 def score_for_nmf(points,k):
-    normalized_matrix = symnmfmodule.norm(points)
-    iH = init_H(k, points)
-    final_H = symnmfmodule.symnmf( iH, normalized_matrix, beta, epsilon, max_iter)
+    final_H=parse_goal_and_calc(k,"symnmf",points)
     labels=cluster_association(final_H)
     score = silhouette_score(points, labels, metric='euclidean')
     print(f"nmf: {score:.4f}")
@@ -44,20 +42,6 @@ def cluster_association(final_H):
         labels[i]=cluster
     return labels
 
-
-def init_H(k, points):
-    np.random.seed(1234)
-    normalized_matrix = symnmfmodule.norm(points)
-    sum = 0
-    for i in range(len(normalized_matrix)):
-        for j in range(len(normalized_matrix[0])):
-            sum += normalized_matrix[i][j]
-    m = sum/(len(normalized_matrix)*len(normalized_matrix[0]))
-    iH = [[] for i in range(len(points))]
-    for i in range(len(points)):
-        for j in range(k):
-            iH[i].append(np.random.uniform(0, 2*math.sqrt(m/k)))
-    return iH
 
 def parse_cmdline_arg(arg_str):
     try:
