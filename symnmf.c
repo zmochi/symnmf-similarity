@@ -90,28 +90,28 @@ int W_matrix(const struct matrix *sym, struct matrix *W) {
     } while ( 0 )
 
     if ( deg_matrix(sym, deg) != 0 ) {
-        RETURN_ERR("Couldn't calculate degree matrix", err);
         free_w;
+        RETURN_ERR("Couldn't calculate degree matrix", err);
     }
 
     if ( copy_matrix(deg, prod) != 0 ) {
-        RETURN_ERR("Couldn't copy deg matrix", err);
         free_w;
+        RETURN_ERR("Couldn't copy deg matrix", err);
     }
 
     if ( pow_matrix(prod, prod, -1.0 / 2.0) != 0 ) {
-        RETURN_ERR("Couldn't raise left_prod to power -1/2", err);
         free_w;
+        RETURN_ERR("Couldn't raise left_prod to power -1/2", err);
     }
 
     if ( multiply_matrices(prod, sym, W) != 0 ) {
-        RETURN_ERR("Couldn't multiply matrices prod * sym into w", err);
         free_w;
+        RETURN_ERR("Couldn't multiply matrices prod * sym into w", err);
     }
 
     if ( multiply_matrices(W, prod, W) != 0 ) {
-        RETURN_ERR("Couldn't multiply matrices sym * w into w", err);
         free_w;
+        RETURN_ERR("Couldn't multiply matrices sym * w into w", err);
     }
 
     return success;
@@ -195,24 +195,24 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
     } while ( 0 )
 
     if ( copy_matrix(init_H, old_H) != 0 ) {
-        RETURN_ERR("Couldn't copy init_H into old_H", 1);
         free_optimize_H;
+        RETURN_ERR("Couldn't copy init_H into old_H", 1);
     }
 
     while ( t < iter ) {
         if ( calc_next_H(old_H, W, aux_matrices, beta, updated_H) != 0 ) {
-            RETURN_ERR("Couldn't calculate next H", err);
             free_optimize_H;
+            RETURN_ERR("Couldn't calculate next H", err);
         }
 
         if ( subtract_matrices(updated_H, old_H, diff_H) != 0 ) {
-            RETURN_ERR("Couldn't subtract matrices", err);
             free_optimize_H;
+            RETURN_ERR("Couldn't subtract matrices", err);
         }
 
         if ( copy_matrix(updated_H, old_H) != 0 ) {
-            RETURN_ERR("Couldn't copy updated H into old H", err);
             free_optimize_H;
+            RETURN_ERR("Couldn't copy updated H into old H", err);
         }
 
         if ( squared_frobenius_norm(diff_H) < epsilon ) break;

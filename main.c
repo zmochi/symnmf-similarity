@@ -157,21 +157,81 @@ void print_matrix(struct matrix *matrix) {
         printf("%c", LINE_DELIM);
     }
 }
+/**
+ * @brief calculates final matrix based on @goal
+ *
+ * @param input_matrix ptr to input matrix of dimensions Nxd
+ * @param goal goal from `enum usr_goal`
+ * @param output_matrix ptr to matrix of dimensions NxN
+ */
+int calc_matrix(struct matrix *input_matrix, enum usr_goal goal,
+                struct matrix *output_matrix) {
+
+    struct matrix *intermediate_matrix;
+    size_t         N, d;
+    /* supress unused */
+    (void)d;
+    N = input_matrix->num_rows;
+    d = input_matrix->num_cols;
+
+    intermediate_matrix = get_new_matrix(N, N);
+
+#define calc_matrix_free                                                       \
+    do {                                                                       \
+        free_matrix(intermediate_matrix);                                      \
+    } while ( 0 )
+
+    switch ( goal ) {
+        case SYM:
+            if ( sym_matrix(input_matrix, output_matrix) != 0 ) {
+                calc_matrix_free;
+                RETURN_ERR("Couldn't calculate similarity matrix",
+                           EXIT_FAILURE);
+            }
+            break;
+
+        case DDG:
+            if ( sym_matrix(input_matrix, intermediate_matrix) != 0 ) {
+                calc_matrix_free;
+                RETURN_ERR("Couldn't calculate similarity matrix",
+                           EXIT_FAILURE);
+            }
+            if ( deg_matrix(intermediate_matrix, output_matrix) != 0 ) {
+                calc_matrix_free;
+                RETURN_ERR("Couldn't calculate diagonal degree matrix",
+                           EXIT_FAILURE);
+            }
+            break;
+
+        case NORM:
+            if ( sym_matrix(input_matrix, intermediate_matrix) != 0 ) {
+                calc_matrix_free;
+                RETURN_ERR("Couldn't calculate similarity matrix",
+                           EXIT_FAILURE);
+            }
+            if ( W_matrix(intermediate_matrix, output_matrix) != 0 ) {
+                calc_matrix_free;
+                RETURN_ERR("Couldn't calculate normalized similarity matrix",
+                           EXIT_FAILURE);
+            }
+            break;
+
+        default:
+            calc_matrix_free;
+            RETURN_ERR("Unknown user goal flag", EXIT_FAILURE);
+    }
+
+    return EXIT_SUCCESS;
+}
 
 int main(int argc, char **argv) {
     FILE          *usr_file;
     size_t         usr_filesize;
     char          *data;
-    struct matrix *input_matrix, *output_matrix, *intermediate_matrix;
+    struct matrix *input_matrix, *output_matrix;
     size_t         N, d;
-    (void)d; /* suppress unused variable warning */
-
-#define main_free_matrices                                                     \
-    do {                                                                       \
-        free_matrix(input_matrix);                                             \
-        free_matrix(intermediate_matrix);                                      \
-        free_matrix(output_matrix);                                            \
-    } while ( 0 )
+    /* supress unused variable */
+    (void)d;
 
     if ( argc != 3 ) {
         LOG1("Usage: %s <[sym | ddg | norm]> <filepath>", argv[0]);
@@ -195,53 +255,18 @@ int main(int argc, char **argv) {
     free_filebuf(data, usr_filesize);
     fclose(usr_file);
 
-    intermediate_matrix = get_new_matrix(N, N);
-    /* all targets require an output matrix of size NxN so allocate once here */
+    /* matrix for calculation in some of the calculations */
+    /* all goals require an output matrix of size NxN so allocate once here and
+     * pass to parse_usr_goal() */
     output_matrix = get_new_matrix(N, N);
 
-    switch ( parse_usr_goal(argv[1]) ) {
-        case SYM:
-            if ( sym_matrix(input_matrix, output_matrix) != 0 ) {
-                main_free_matrices;
-                RETURN_ERR("Couldn't calculate similarity matrix",
-                           EXIT_FAILURE);
-            }
-            break;
+    calc_matrix(input_matrix, parse_usr_goal(argv[1]), output_matrix);
 
-        case DDG:
-            if ( sym_matrix(input_matrix, intermediate_matrix) != 0 ) {
-                main_free_matrices;
-                RETURN_ERR("Couldn't calculate similarity matrix",
-                           EXIT_FAILURE);
-            }
-            if ( deg_matrix(intermediate_matrix, output_matrix) != 0 ) {
-                main_free_matrices;
-                RETURN_ERR("Couldn't calculate diagonal degree matrix",
-                           EXIT_FAILURE);
-            }
-            break;
-
-        case NORM:
-            if ( sym_matrix(input_matrix, intermediate_matrix) != 0 ) {
-                main_free_matrices;
-                RETURN_ERR("Couldn't calculate similarity matrix",
-                           EXIT_FAILURE);
-            }
-            if ( W_matrix(intermediate_matrix, output_matrix) != 0 ) {
-                main_free_matrices;
-                RETURN_ERR("Couldn't calculate normalized similarity matrix",
-                           EXIT_FAILURE);
-            }
-            break;
-
-        default:
-            main_free_matrices;
-            RETURN_ERR("Unknown user goal flag", EXIT_FAILURE);
-    }
+    free(input_matrix);
 
     print_matrix(output_matrix);
 
-    main_free_matrices;
+    free(output_matrix);
 
     return EXIT_SUCCESS;
 }

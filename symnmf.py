@@ -5,7 +5,7 @@ import symnmfmodule
 import math
 
 max_iter = 300
-epsilon=0.0001
+epsilon = 0.0001
 beta = 0.5
 
 
@@ -15,7 +15,7 @@ def main():
     text_name = sys.argv[3]
     points = parse_points(text_name)
     k = parse_k(k, len(points))
-    matrix = parse_goal(k, goal, points)
+    matrix = parse_goal_and_calc(k, goal, points)
     output_matrix(matrix)
 
 
@@ -70,12 +70,13 @@ def init_H(k, points):
     return iH
 
 
-def parse_goal(k, goal, points):
+def parse_goal_and_calc(k, goal, points):
     matrix = []
     if goal == "symnmf":
         normalized_matrix = symnmfmodule.norm(points)
         iH = init_H(k, points)
-        matrix = symnmfmodule.symnmf( iH, normalized_matrix, beta, epsilon, max_iter)
+        matrix = symnmfmodule.symnmf(
+            iH, normalized_matrix, beta, epsilon, max_iter)
     elif goal == "sym":
         matrix = symnmfmodule.sym(points)
     elif goal == "ddg":
@@ -98,4 +99,5 @@ def output_matrix(matrix):
         line = ""
 
 
-main()
+if __name__ == "main":
+    main()
