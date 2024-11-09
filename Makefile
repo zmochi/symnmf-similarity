@@ -9,8 +9,6 @@ PROJ_ROOT = .
 SRC_DIR = .
 H_DIR = .
 OBJ_DIR = obj
-PY_SRC_DIR = .
-PY_H_DIR = .
 LIB_DIR = libs# obj directory structure must must SRC_DIR structure
 OBJ_LIB_DIR = ${OBJ_DIR}/libs
 
@@ -26,9 +24,10 @@ define add_path_prefix
 $(patsubst %,$(2)/%,$(1))
 endef
 
+nodebug: CFLAGS += -O3 -DNDEBUG # disable assert()
 nodebug: all
 
-debug: CFLAGS += -g
+debug: CFLAGS += -g -O0
 debug: all
 
 all: directories ${OBJS}
@@ -45,7 +44,7 @@ PY_CFLAGS = -Wall -Wextra ${PY_C_INCLUDES}
 PY_C_INCLUDES = $(shell python3-config --includes)
 
 clangd:
-	./gen_compile_commands.sh "${CC}" "-xc ${CFLAGS}" "-xc ${PY_CFLAGS}"
+	$(PROJ_ROOT)/gen_compile_commands.sh "${CC}" "-xc ${CFLAGS}" "-xc ${PY_CFLAGS}"
 
 clean:
 	rm -rf ${OBJ_DIR}
