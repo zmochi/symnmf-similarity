@@ -47,6 +47,6 @@ clangd:
 	$(PROJ_ROOT)/gen_compile_commands.sh "${CC}" "-xc ${CFLAGS}" "-xc ${PY_CFLAGS}"
 
 clean:
-	rm -rf ${OBJ_DIR}
+	rm -rf ${OBJ_DIR} $(PROJ_ROOT)/$(EXECUTABLE_NAME)
 
 .PHONY: clangd clean
