@@ -108,6 +108,6 @@ int copy_matrix(const matrix *original, matrix *copy);
  */
 int pow_matrix(matrix *matrix, struct matrix *result, double power);
 
-matrix_element squared_frobenius_norm(matrix *matrix);
+double squared_frobenius_norm(matrix *matrix);
 
 #endif

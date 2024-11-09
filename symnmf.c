@@ -59,6 +59,7 @@ int sym_matrix(const struct matrix *X, struct matrix *sym) {
     return success;
 }
 
+/* second argument deg must be a zeroed-out matrix */
 int deg_matrix(const struct matrix *sym_matrix, struct matrix *deg) {
     size_t         i, j;
     m_index        n = sym_matrix->num_rows;
@@ -113,6 +114,8 @@ int W_matrix(const struct matrix *sym, struct matrix *W) {
         free_w;
         RETURN_ERR("Couldn't multiply matrices sym * w into w", err);
     }
+
+    free_w;
 
     return success;
 }
@@ -173,6 +176,7 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
                const double beta, const double epsilon, const size_t iter,
                struct matrix *updated_H) {
 
+    double         norm;
     m_index        n = init_H->num_rows, k = init_H->num_cols;
     size_t         t = 0;
     struct matrix *old_H = get_new_matrix(n, k), *diff_H = get_new_matrix(n, k);
@@ -215,7 +219,7 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
             RETURN_ERR("Couldn't copy updated H into old H", err);
         }
 
-        if ( squared_frobenius_norm(diff_H) < epsilon ) break;
+        if ( (norm = squared_frobenius_norm(diff_H)) < epsilon ) break;
 
         t++;
     }

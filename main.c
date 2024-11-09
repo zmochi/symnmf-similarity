@@ -64,6 +64,15 @@ int free_filebuf(char *buf, size_t file_size) {
     return 0;
 }
 
+/**
+ * @brief parses a matrix in the form of (x.xxxx,x.xxxx\nx.xxxx...) from a
+ * buffer to a `struct matrix`.
+ *
+ * @param data data buffer containing matrix to parse
+ * @param data_size length of data buffer
+ * @return returns struct matrix* containing the data, or NULL if buffer can't
+ * be parsed. matrix must be free'd by user.
+ */
 struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
 #define REALLOC_MUL   2
 #define INIT_NUM_VECS (1 << 5) /* 32 */
@@ -77,7 +86,7 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
     size_t          data_offset = 0;
     char           *num, *endptr;
 
-    /* replaces every NUM_DELIM or LINE_DELIM instances in a null byte to use
+    /* replaces every NUM_DELIM or LINE_DELIM instances with a null byte to use
      * strtod() on each number later, and records the dimension of each vector
      * in points_dims */
     while ( data_offset < data_size ) {
@@ -221,6 +230,8 @@ int calc_matrix(struct matrix *input_matrix, enum usr_goal goal,
             RETURN_ERR("Unknown user goal flag", EXIT_FAILURE);
     }
 
+    calc_matrix_free;
+
     return EXIT_SUCCESS;
 }
 
@@ -249,24 +260,26 @@ int main(int argc, char **argv) {
 
     input_matrix = parse_data_to_matrix(data, usr_filesize);
 
+    if ( input_matrix == NULL ) {
+        LOG_ABORT("Couldn't parse user data into matrix");
+    }
+
     N = input_matrix->num_rows;
     d = input_matrix->num_cols;
 
     free_filebuf(data, usr_filesize);
     fclose(usr_file);
 
-    /* matrix for calculation in some of the calculations */
     /* all goals require an output matrix of size NxN so allocate once here and
      * pass to parse_usr_goal() */
-    output_matrix = get_new_matrix(N, N);
+    output_matrix = get_empty_matrix(N, N);
 
     calc_matrix(input_matrix, parse_usr_goal(argv[1]), output_matrix);
 
-    free(input_matrix);
-
     print_matrix(output_matrix);
 
-    free(output_matrix);
+    free_matrix(input_matrix);
+    free_matrix(output_matrix);
 
     return EXIT_SUCCESS;
 }

@@ -12,22 +12,24 @@
 #endif /* __GNUC__ */
 #endif /* __STDC_VERSION__ */
 
-#define LOG_ERR(err_msg)                                                       \
-    fprintf(stderr, "ERROR: at line %d: " err_msg "\n", __LINE__)
-#define LOG_ERR1(fmt, arg) fprintf(stderr, "ERROR: " fmt "\n", arg)
-#define LOG1(fmt, arg)     printf(fmt "\n", arg)
+#define PRINT_GENERIC_ERR printf("An Error Has Occurred\n")
 
-#define CHECK_ALLOC_FAIL(ptr)                                                  \
-    if ( ptr == NULL ) {                                                       \
-        LOG_ERR("an error has occured");                                       \
-        exit(1);                                                               \
-    }
+#define LOG_ERR(err_msg) PRINT_GENERIC_ERR;
+/*fprintf(stderr, "ERROR: at line %d: " err_msg "\n", __LINE__)*/
+#define LOG_ERR1(fmt, arg)                                                     \
+    PRINT_GENERIC_ERR; /*fprintf(stderr, "ERROR: " fmt "\n", arg)*/
+#define LOG1(fmt, arg) /*do nothing*/ /*printf(fmt "\n", arg)*/
 
 #define LOG_ABORT(fmt)                                                         \
     do {                                                                       \
         LOG_ERR(fmt);                                                          \
         exit(1);                                                               \
     } while ( 0 )
+
+#define CHECK_ALLOC_FAIL(ptr)                                                  \
+    if ( ptr == NULL ) {                                                       \
+        LOG_ABORT("Couldn't allocate memory");                                 \
+    }
 
 #define RETURN_ERR(fmt, ret)                                                   \
     do {                                                                       \

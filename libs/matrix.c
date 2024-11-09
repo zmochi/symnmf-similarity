@@ -135,9 +135,9 @@ int pow_matrix(matrix *matrix, struct matrix *result, double power) {
     return 0;
 }
 
-matrix_element squared_frobenius_norm(matrix *matrix) {
-    m_index        i, j;
-    matrix_element res = 0;
+double squared_frobenius_norm(matrix *matrix) {
+    m_index i, j;
+    double  res = 0;
     for ( i = 0; i < matrix->num_rows; i++ ) {
         for ( j = 0; j < matrix->num_cols; j++ ) {
             res += pow(matrix->data[i][j], 2);
