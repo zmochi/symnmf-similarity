@@ -86,6 +86,10 @@ struct matrix *parse_data_to_matrix(char *data, size_t data_size) {
     size_t          data_offset = 0;
     char           *num, *endptr;
 
+    /* initialize this value since its used later as a base for number of
+     * columns in matrix */
+    points_dims[0] = 0;
+
     /* replaces every NUM_DELIM or LINE_DELIM instances with a null byte to use
      * strtod() on each number later, and records the dimension of each vector
      * in points_dims */
