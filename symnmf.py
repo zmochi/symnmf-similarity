@@ -54,7 +54,7 @@ def parse_k(k, len_points):
         exit(1)
     return k
 
-
+# get initial H matrix according to provided algorithm
 def init_H(k, points):
     np.random.seed(1234)
     normalized_matrix = symnmfmodule.norm(points)
@@ -69,7 +69,7 @@ def init_H(k, points):
             iH[i].append(np.random.uniform(0, 2*math.sqrt(m/k)))
     return iH
 
-
+# call appropriate function according to the goal set by user
 def parse_goal_and_calc(k, goal, points):
     matrix = []
     if goal == "symnmf":
@@ -85,7 +85,7 @@ def parse_goal_and_calc(k, goal, points):
         matrix = symnmfmodule.norm(points)
     return matrix
 
-
+# print matrix according to the format
 def output_matrix(matrix):
     line = ""
     for k in matrix:
