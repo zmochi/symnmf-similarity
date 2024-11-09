@@ -28,7 +28,7 @@
 
 #define CHECK_ALLOC_FAIL(ptr)                                                  \
     if ( ptr == NULL ) {                                                       \
-        LOG_ABORT("Couldn't allocate memory");                                 \
+        return NULL;                                                           \
     }
 
 #define RETURN_ERR(fmt, ret)                                                   \

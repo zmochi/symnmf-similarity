@@ -1,6 +1,7 @@
 #include "libs/matrix.h"
 #include "libs/utils.h"
 
+#include <_stdio.h>
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -83,6 +84,13 @@ int deg_matrix(const struct matrix *sym_matrix, struct matrix *deg) {
 int W_matrix(const struct matrix *sym, struct matrix *W) {
     m_index        n = sym->num_rows;
     struct matrix *prod = get_new_matrix(n, n), *deg = get_empty_matrix(n, n);
+    if ( !prod ) {
+        return err;
+    }
+    if ( !deg ) {
+        free_matrix(prod);
+        return err;
+    }
 
 #define free_w                                                                 \
     do {                                                                       \
@@ -182,6 +190,14 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
     struct matrix *old_H = get_new_matrix(n, k), *diff_H = get_new_matrix(n, k);
     struct matrix *aux_matrices[4];
 
+    if ( !old_H ) {
+        return err;
+    }
+    if ( !diff_H ) {
+        free_matrix(old_H);
+        return err;
+    }
+
     ASSERT_SQUARE_MATRIX(W);
 
     aux_matrices[0] = get_new_matrix(n, k);
@@ -197,6 +213,10 @@ int optimize_H(const struct matrix *init_H, const struct matrix *W,
         free_matrix(old_H);                                                    \
         free_matrix(diff_H);                                                   \
     } while ( 0 )
+
+    if ( !aux_matrices[3] ) {
+        free_optimize_H;
+    }
 
     if ( copy_matrix(init_H, old_H) != 0 ) {
         free_optimize_H;

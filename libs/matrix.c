@@ -6,14 +6,20 @@
 matrix *get_new_matrix(m_index rows, m_index cols) {
     m_index i;
     matrix *new_mat = malloc(sizeof(matrix));
-    CHECK_ALLOC_FAIL(new_mat);
+    if ( new_mat == NULL ) {
+        return NULL;
+    };
     new_mat->num_cols = cols;
     new_mat->num_rows = rows;
     new_mat->data = malloc(rows * sizeof(matrix_element *));
-    CHECK_ALLOC_FAIL(new_mat->data);
+    if ( new_mat->data == NULL ) {
+        return NULL;
+    };
     for ( i = 0; i < rows; i++ ) {
         new_mat->data[i] = malloc(cols * sizeof(matrix_element));
-        CHECK_ALLOC_FAIL(new_mat->data[i]);
+        if ( new_mat->data[i] == NULL ) {
+            return NULL;
+        };
     }
 
     return new_mat;
@@ -23,6 +29,8 @@ struct matrix *get_empty_matrix(m_index rows, m_index cols) {
     m_index i, j;
     matrix *new_mat;
     new_mat = get_new_matrix(rows, cols);
+    if ( !new_mat ) return NULL;
+
     for ( i = 0; i < rows; i++ ) {
         for ( j = 0; j < cols; j++ ) {
             new_mat->data[i][j] = 0;
@@ -70,8 +78,10 @@ int multiply_matrices(const matrix *m1, const matrix *m2,
     m_index        i, j, k;
     struct matrix *output = result;
     int            isolate_result = (result == m1 || result == m2);
-    if ( isolate_result )
+    if ( isolate_result ) {
         output = get_new_matrix(result->num_rows, result->num_cols);
+        if ( !output ) return -1;
+    }
 
     CHECK_RET_MATRIX_DIM(m1, m1->num_rows, m2->num_rows, 1);
     CHECK_RET_MATRIX_DIM(result, m1->num_rows, m2->num_cols, 1);
