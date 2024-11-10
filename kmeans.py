@@ -45,7 +45,7 @@ def kMeans(points, k, iter=200):
     print(labels)
     return labels
 
-
+# determine new centroid for cluster
 def calculate_centroid(cluster):
     size_of_cluster = len(cluster)
     new_centroid = []
@@ -58,82 +58,10 @@ def calculate_centroid(cluster):
             new_centroid.append((sum_i/size_of_cluster))
     return new_centroid
 
-
+# calculate distance between vectors
 def d(p, q):
     dis = 0
     for i in range(len(p)):
         dis += (p[i]-q[i])**2
     return math.sqrt(dis)
 
-
-def parse_cmdline_arg(arg_str):
-    try:
-        parsed_arg = float(arg_str)
-    except ValueError:
-        return -1  # indicate error with -1 since commandline args shouldn't be negative
-
-    if parsed_arg - int(parsed_arg) != 0:
-        return -1  # indicate error with -1 since commandline args shouldn't be negative
-    return int(parsed_arg)
-
-
-if (len(sys.argv) == 4):
-    k = sys.argv[1]
-    iter = sys.argv[2]
-    text_name = sys.argv[3]
-    type = text_name[-4:]
-    if not (type == ".txt"):
-        print("An Error Has Occurred")
-        exit(1)
-    f = open(text_name, "r")
-    for x in f:
-        x = x.replace("\n", "")
-        pointstr = x.split(",")
-        point = []
-        for str in pointstr:
-            point.append(float(str))
-        points.append(point)
-    k = parse_cmdline_arg(k)
-    if not (k > 1 and k < len(points)):
-        print("Invalid number of clusters!")
-        exit(1)
-    iter = parse_cmdline_arg(iter)
-    if not (iter > 1 and iter < max_iter):
-        print("Invalid maximum iteration!")
-        exit(1)
-elif (len(sys.argv) == 3):
-    k = sys.argv[1]
-    iter = 200
-    text_name = sys.argv[2]
-    type = text_name[-4:]
-    if not (type == ".txt"):
-        print("An Error Has Occurred")
-        exit(1)
-    f = open(text_name, "r")
-    for x in f:
-        x = x.replace("\n", "")
-        pointstr = x.split(",")
-        point = []
-        for str in pointstr:
-            point.append(float(str))
-        points.append(point)
-    k = parse_cmdline_arg(k)
-    if not (k > 1 and k < len(points)):
-        print("Invalid number of clusters!")
-        exit(1)
-else:
-    if not (1 > 2):
-        print("An Error Has Occurred")
-        exit(1)
-
-kms = kMeans(points, k, iter)
-# line = ""
-# for k in kms:
-#     for i in range(len(k)):
-#         formated_num = "%0.4f" % k[i]
-#         if i != len(k)-1:
-#             line += formated_num+","
-#         else:
-#             line += formated_num
-#     print(line)
-#     line = ""
