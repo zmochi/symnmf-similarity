@@ -18,7 +18,7 @@ def main():
     matrix = parse_goal_and_calc(k, goal, points)
     output_matrix(matrix)
 
-
+# accept whole values presented in float form
 def parse_cmdline_arg(arg_str):
     try:
         parsed_arg = float(arg_str)
@@ -28,8 +28,8 @@ def parse_cmdline_arg(arg_str):
     if parsed_arg - int(parsed_arg) != 0:
         return -1  # indicate error with -1 since commandline args shouldn't be negative
     return int(parsed_arg)
-
-
+    
+# parse points into list
 def parse_points(text_name):
     points = []
     type = text_name[-4:]
