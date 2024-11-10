@@ -16,7 +16,7 @@ line = ""
 formated_num = ""
 
 
-def kMeans(points, k, iter=200):
+def kMeans(points, k, iter=300):
     centroids = [[] for i in range(k)]
     labels=[0 for i in range(len(points))]
     for i in range(k):
