@@ -3,7 +3,7 @@ import math
 import sys
 
 max_iter = 300
-epsilon=math.e**(-4)
+epsilon=0.0001
 k = ""
 iter = ""
 text_name = ""
